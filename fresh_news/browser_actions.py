@@ -1,7 +1,8 @@
-import os
 from RPA.Browser.Selenium import Selenium
 from selenium.webdriver.common.by import By
 
+import os
+import time
 
 import modules.news.news as news
 import modules.operations.operations as operations
@@ -25,18 +26,20 @@ def search_for(browser_lib, term):
 
 # Step 3: Locate the news category filter and select the desired option
 def select_category(browser_lib, term):
-    browser_lib.click_button("css:button.css-4d08fs")
+    try:
+        browser_lib.click_button("css:button.css-4d08fs")
+        elements = browser_lib.find_elements(
+            "xpath://div[@class='css-tw4vmx']//input[@type='checkbox']"
+        )
 
-    elements = browser_lib.find_elements(
-        "xpath://div[@class='css-tw4vmx']//input[@type='checkbox']"
-    )
+        for element in elements:
+            name_element = element.accessible_name
 
-    for element in elements:
-        name_element = element.accessible_name
-
-        if name_element.find(term) >= 0:
-            element.click()
-            break
+            if name_element.find(term) >= 0:
+                element.click()
+                break
+    except:
+        print("no section found")
 
 
 # Step 4: Locate the date filter and select the latest news option
@@ -74,8 +77,19 @@ def display_all_news(browser_lib):
             browser_lib.click_button(
                 "xpath://div[@class='css-1t62hi8']//div[@class='css-vsuiox']//button"
             )
+            time.sleep(0.5)
         except:
             break
+
+
+def get_news_items(browser_lib, search_phrase):
+    news_items = browser_lib.find_elements(
+        "xpath://div[@class='css-46b038']//ol//li[@class='css-1l4w6pd']"
+    )
+    if len(news_items) == 0:
+        raise Exception(f"Showing 0 results for : {search_phrase} Excel no generated")
+
+    return news_items
 
 
 def order_by_newest(browser_lib):
@@ -86,11 +100,8 @@ def order_by_newest(browser_lib):
 
 
 # Step 6: Find the news items and extract the title, date, and descriptions
-def find_info_news(browser_lib, phrase):
+def find_info_news(news_items, phrase):
     list_news = []
-    news_items = browser_lib.find_elements(
-        "xpath://div[@class='css-46b038']//ol//li[@class='css-1l4w6pd']"
-    )
 
     for item in news_items:
         title = operations.get_description(item, By.TAG_NAME, "h4", "desc")
@@ -103,12 +114,11 @@ def find_info_news(browser_lib, phrase):
 
         picture_file_name = operations.get_description(item, By.TAG_NAME, "img", "id")
 
-        if picture_file_name != "":
-            picture = item.find_element(By.TAG_NAME, "img")
-
         count_phrases = operations.count_phrases(title, description, phrase)
 
         has_money = operations.has_money(title, description)
+
+        picture = ""
 
         news_info = news.NewsInfo(
             title,
@@ -146,10 +156,14 @@ def generate_excel(list_news, directory):
     operations.download_excel(data, directory)
 
 
-def download_img(list_news, directory):
-    for new in list_news:
-        path = os.path.join(directory, f"{new.picture_name}.png")
-        new.picture.screenshot(path)
+def download_img(news_items, directory):
+    for item in news_items:
+        picture_file_name = operations.get_description(item, By.TAG_NAME, "img", "id")
+
+        if picture_file_name != "":
+            picture = item.find_element(By.TAG_NAME, "img")
+            path = os.path.join(directory, f"{picture_file_name}.png")
+            picture.screenshot(path)
 
 
 def download_news(site, search_phrase, category, months):
@@ -169,16 +183,18 @@ def download_news(site, search_phrase, category, months):
         order_by_newest(browser_lib)
         # Step 5 : Display all avaible news
         display_all_news(browser_lib)
+        # get the list of news
+        news_items = get_news_items(browser_lib, search_phrase)
         # Step 6 : Get all information news
-        list_news = find_info_news(browser_lib, search_phrase)
+        list_news = find_info_news(news_items, search_phrase)
 
         if list_news != []:
-            # create direcroty
+            # Step 7 create direcroty
             directory = operations.create_directory()
-            # Step 7: Store the extracted data in an Excel file
+            # Step 8: Store the extracted data in an Excel file
             generate_excel(list_news, directory)
-            # Step 8: Locate the news picture and download it
-            download_img(list_news, directory)
+            # Step 9: Locate the news picture and download it
+            download_img(news_items, directory)
 
     except Exception as e:
         print(e)

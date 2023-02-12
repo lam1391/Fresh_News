@@ -25,7 +25,7 @@ def get_description(item, locator, id, term):
 
 # Count the number of search phrases in the title and description
 def count_phrases(title: str, description: str, phrase: str):
-    return len(re.findall(phrase, title + description))
+    return len(re.findall(phrase.upper(), title.upper() + description.upper()))
 
 
 # Check if the title or description contains any amount of money
@@ -88,11 +88,16 @@ def download_excel(data, directory):
 def create_directory():
     path = ""
     today = datetime.now()
-    directory = today.strftime("%m-%d-%Y-%H-%M-%S")
+    new_directory = today.strftime("%m-%d-%Y-%H-%M-%S")
     parent_dir = "./fresh_news/Downloads/"
+
+    if not os.path.exists(parent_dir):
+        dir = os.path.join("./fresh_news/", "Downloads")
+        os.mkdir(dir)
+
     try:
         # Path
-        path = os.path.join(parent_dir, directory)
+        path = os.path.join(parent_dir, new_directory)
         os.mkdir(path)
     except OSError as error:
         print(error)
