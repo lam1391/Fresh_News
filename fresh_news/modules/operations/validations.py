@@ -1,6 +1,7 @@
 import urllib.request
 
 
+# validate the numer of input arguments
 def validate_num_arg(argv):
     # total arguments
     n = len(argv)
@@ -8,6 +9,7 @@ def validate_num_arg(argv):
         raise Exception("number of arguments no valid")
 
 
+# validate if the URL is correct
 def validate_url(url):
     try:
         urllib.request.urlopen(url)
@@ -16,11 +18,13 @@ def validate_url(url):
         raise Exception("url No valid")
 
 
+# validate if the pharase is not empty
 def validate_phrase(phrase):
     if not phrase:
         raise Exception("invalid phrase for search")
 
 
+# validate if the category is valid
 def validate_category(phrase):
     categories = (
         "Any",
@@ -47,6 +51,7 @@ def validate_category(phrase):
         raise Exception("invalid category")
 
 
+# validate if the number of months is valid
 def validate_months(months):
     num_months = int(months)
     if num_months < 0:

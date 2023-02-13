@@ -70,7 +70,15 @@ def filter_dates(browser_lib, term):
     )
 
 
-# Step 5 : Display all avaible news
+# step 5 Order the result by newest
+def order_by_newest(browser_lib):
+    browser_lib.select_from_list_by_value(
+        "xpath://div[@class='css-hrdzfd']//div[@class='css-1e67xgz']//select[@class='css-v7it2b']",
+        "newest",
+    )
+
+
+# Step 6 : Display all avaible news
 def display_all_news(browser_lib):
     while True:
         try:
@@ -82,6 +90,7 @@ def display_all_news(browser_lib):
             break
 
 
+# Step 7 get the list of news
 def get_news_items(browser_lib, search_phrase):
     news_items = browser_lib.find_elements(
         "xpath://div[@class='css-46b038']//ol//li[@class='css-1l4w6pd']"
@@ -92,14 +101,7 @@ def get_news_items(browser_lib, search_phrase):
     return news_items
 
 
-def order_by_newest(browser_lib):
-    browser_lib.select_from_list_by_value(
-        "xpath://div[@class='css-hrdzfd']//div[@class='css-1e67xgz']//select[@class='css-v7it2b']",
-        "newest",
-    )
-
-
-# Step 6: Find the news items and extract the title, date, and descriptions
+# Step 8: Find the news items and extract the title, date, and descriptions
 def find_info_news(news_items, phrase):
     list_news = []
 
@@ -135,6 +137,7 @@ def find_info_news(news_items, phrase):
     return list_news
 
 
+# Step 9: Store the extracted data in an Excel file
 def generate_excel(list_news, directory):
     # Initialize a list to store the data
     data = []
@@ -156,6 +159,7 @@ def generate_excel(list_news, directory):
     operations.download_excel(data, directory)
 
 
+# Step 10: Locate the news picture and download it
 def download_img(news_items, directory):
     for item in news_items:
         picture_file_name = operations.get_description(item, By.TAG_NAME, "img", "id")
@@ -166,6 +170,7 @@ def download_img(news_items, directory):
             picture.screenshot(path)
 
 
+# main process
 def download_news(site, search_phrase, category, months):
     browser_lib = Selenium()
 
@@ -179,21 +184,21 @@ def download_news(site, search_phrase, category, months):
         select_category(browser_lib, category)
         # Step 4: Locate the date filter and select the latest news option
         filter_dates(browser_lib, months)
-        # Order by newest
+        # Step 5 Order by newest
         order_by_newest(browser_lib)
-        # Step 5 : Display all avaible news
+        # Step 6 : Display all avaible news
         display_all_news(browser_lib)
-        # get the list of news
+        # Step 7 get the list of news
         news_items = get_news_items(browser_lib, search_phrase)
-        # Step 6 : Get all information news
+        # Step 8 : Get all information news
         list_news = find_info_news(news_items, search_phrase)
 
         if list_news != []:
-            # Step 7 create direcroty
+            # create direcroty
             directory = operations.create_directory()
-            # Step 8: Store the extracted data in an Excel file
+            # Step 9: Store the extracted data in an Excel file
             generate_excel(list_news, directory)
-            # Step 9: Locate the news picture and download it
+            # Step 10: Locate the news picture and download it
             download_img(news_items, directory)
 
     except Exception as e:

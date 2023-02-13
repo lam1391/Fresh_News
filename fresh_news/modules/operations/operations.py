@@ -61,6 +61,7 @@ def get_date_range(term=0):
         print(e)
 
 
+# downloads all news in excel format
 def download_excel(data, directory):
     try:
         # Convert the list of data to a Pandas DataFrame
@@ -85,6 +86,7 @@ def download_excel(data, directory):
         print(e)
 
 
+# validate if the directory exist if not, create a new one
 def create_directory():
     path = ""
     today = datetime.now()
