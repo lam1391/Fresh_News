@@ -1,4 +1,3 @@
-from RPA.Browser.Selenium import Selenium
 import browser_actions
 import sys
 
@@ -18,19 +17,13 @@ def run(argv):
     # def run():
     try:
         # validation of input parameters
-        # val_ini_arg(argv)
+        val_ini_arg(argv)
 
         # parameter assignment
-        # site = argv[1]
-        # search_phrase = argv[2]
-        # category = argv[3]
-        # months = argv[4]
-
-        # parameter assignment
-        site = "https://www.nytimes.com/"
-        search_phrase = "fsdfsdfsdf"
-        category = "Any"
-        months = 48
+        site = argv[1]
+        search_phrase = argv[2]
+        category = argv[3]
+        months = argv[4]
 
         # download all matched news and images related
         browser_actions.download_news(site, search_phrase, category, months)
@@ -41,4 +34,3 @@ def run(argv):
 
 if __name__ == "__main__":
     run(sys.argv)
-    # run()
