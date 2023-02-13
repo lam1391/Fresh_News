@@ -184,6 +184,9 @@ selenium-screenshot-*.png
 ##vs Code
 .vscode
 
+##zip
+*.zip
+
 ### Downloads
 fresh_news/Downloads/
 
