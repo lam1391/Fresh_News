@@ -13,7 +13,6 @@ def validate_num_arg(argv):
 def validate_url(url):
     try:
         urllib.request.urlopen(url)
-
     except:
         raise Exception("url No valid")
 
@@ -53,6 +52,5 @@ def validate_category(phrase):
 
 # validate if the number of months is valid
 def validate_months(months):
-    num_months = int(months)
-    if num_months < 0:
+    if months < 0:
         raise Exception("number of months invalid")

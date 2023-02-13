@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11.0
+  - pip=23.0
+  - pip:
+    - rpaframework==21.1.0
+    - pandas==1.5.3
+    - urllib3==1.26.14

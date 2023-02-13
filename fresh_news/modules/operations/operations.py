@@ -13,7 +13,6 @@ def get_description(item, locator, id, term):
 
         if term == "id":
             description = element.id
-
         else:
             description = element.text
 
@@ -49,11 +48,8 @@ def get_date_range(term=0):
             Number_months = term
 
         today = datetime.now()
-
         final_date = today.strftime("%m/%d/%Y")
-
         past = today + relativedelta(months=-Number_months)
-
         ini_date = past.strftime("%m/%d/%Y")
 
         return ini_date, final_date
@@ -91,10 +87,10 @@ def create_directory():
     path = ""
     today = datetime.now()
     new_directory = today.strftime("%m-%d-%Y-%H-%M-%S")
-    parent_dir = "./fresh_news/Downloads/"
+    parent_dir = "./Downloads/"
 
     if not os.path.exists(parent_dir):
-        dir = os.path.join("./fresh_news/", "Downloads")
+        dir = os.path.join("./", "Downloads")
         os.mkdir(dir)
 
     try:

@@ -16,11 +16,8 @@ def open_the_website(browser_lib, url):
 # Step 2: Locate the search field and enter the search phrase
 def search_for(browser_lib, term):
     search_field = "css:input"
-
     browser_lib.click_button("css:button.css-tkwi90.e1iflr850")
-
     browser_lib.input_text(search_field, term)
-
     browser_lib.press_keys(search_field, "ENTER")
 
 
@@ -31,10 +28,8 @@ def select_category(browser_lib, term):
         elements = browser_lib.find_elements(
             "xpath://div[@class='css-tw4vmx']//input[@type='checkbox']"
         )
-
         for element in elements:
             name_element = element.accessible_name
-
             if name_element.find(term) >= 0:
                 element.click()
                 break
@@ -47,23 +42,18 @@ def filter_dates(browser_lib, term):
     browser_lib.click_button(
         "xpath://div[@class='css-wsup08']//div//div[@class='css-trpop8']//button"
     )
-
     browser_lib.click_button(
         "xpath://div[@class='css-91q1y8']//ul[@class='css-vh8n2n']//li[@class='css-guqk22']//button[@value='Specific Dates']"
     )
-
     startDate, endDate = operations.get_date_range(term)
-
     browser_lib.input_text(
         "xpath://div[@class='css-79elbk']//label[@for='startDate']//input[@id='startDate']",
         startDate,
     )
-
     browser_lib.input_text(
         "xpath://div[@class='css-79elbk']//label[@for='endDate']//input[@id='endDate']",
         endDate,
     )
-
     browser_lib.press_keys(
         "xpath://div[@class='css-79elbk']//label[@for='endDate']//input[@id='endDate']",
         "ENTER",
@@ -113,14 +103,9 @@ def find_info_news(news_items, phrase):
         )
 
         date = operations.get_description(item, By.CLASS_NAME, "css-17ubb9w", "desc")
-
         picture_file_name = operations.get_description(item, By.TAG_NAME, "img", "id")
-
         count_phrases = operations.count_phrases(title, description, phrase)
-
         has_money = operations.has_money(title, description)
-
-        picture = ""
 
         news_info = news.NewsInfo(
             title,
@@ -129,7 +114,6 @@ def find_info_news(news_items, phrase):
             picture_file_name,
             count_phrases,
             has_money,
-            picture,
         )
 
         list_news.append(news_info)
@@ -171,7 +155,7 @@ def download_img(news_items, directory):
 
 
 # main process
-def download_news(site, search_phrase, category, months):
+def download_news(site: str, search_phrase: str, category: str, months: int):
     browser_lib = Selenium()
 
     list_news = []
@@ -200,6 +184,8 @@ def download_news(site, search_phrase, category, months):
             generate_excel(list_news, directory)
             # Step 10: Locate the news picture and download it
             download_img(news_items, directory)
+
+            print("process completed successfully")
 
     except Exception as e:
         print(e)

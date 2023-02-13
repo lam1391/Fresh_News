@@ -7,7 +7,6 @@ class NewsInfo:
         picture_name: str,
         count_of_phrases: int,
         has_money: bool,
-        picture,
     ) -> None:
         self.title = title
         self.date = date
@@ -15,4 +14,3 @@ class NewsInfo:
         self.picture_name = picture_name
         self.count_of_phrases = count_of_phrases
         self.has_money = has_money
-        self.picture = picture
