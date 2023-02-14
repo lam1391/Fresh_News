@@ -179,7 +179,7 @@ def download_news(site: str, search_phrase: str, category: str, months: int):
 
         if list_news != []:
             # create direcroty
-            directory = operations.create_directory()
+            directory = "output/"
             # Step 9: Store the extracted data in an Excel file
             generate_excel(list_news, directory)
             # Step 10: Locate the news picture and download it
